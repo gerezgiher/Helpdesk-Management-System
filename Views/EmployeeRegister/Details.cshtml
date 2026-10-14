@@ -1,0 +1,16 @@
+﻿@model HelpdeskSystem.Models.Employee
+
+<h2>Employee Details</h2>
+
+<table class="table table-bordered">
+    <tr><th>Name</th><td>@Model.FullName</td></tr>
+    <tr><th>Email</th><td>@Model.Email</td></tr>
+    <tr><th>Phone</th><td>@Model.PhoneNumber</td></tr>
+    <tr><th>Gender</th><td>@Model.Gender</td></tr>
+    <tr><th>Status</th><td>@Model.AvailabilityStatus</td></tr>
+    <tr><th>Department</th><td>@Model.Department?.DepartmentName</td></tr>
+    <tr><th>Block</th><td>@Model.Block?.BlockName</td></tr>
+    <tr><th>Floor</th><td>@Model.Block?.NumberOfFloors</td></tr>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

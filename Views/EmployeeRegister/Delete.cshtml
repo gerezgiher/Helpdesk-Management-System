@@ -1,0 +1,12 @@
+﻿@model HelpdeskSystem.Models.Employee
+
+<h2>Delete Employee</h2>
+
+<h4>Are you sure you want to delete @Model.FirstName @Model.LastName?</h4>
+
+<form asp-action="DeleteConfirmed" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>

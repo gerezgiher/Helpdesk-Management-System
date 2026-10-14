@@ -1,0 +1,32 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Status>
+
+<h2 class="text-center mb-4 text-primary">Statuses List</h2>
+
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-success">+ New Status</a>
+</div>
+
+<table id="statusesTable" class="table table-striped table-bordered custom-datatable">
+    <thead>
+        <tr>
+            <th>Status Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var status in Model)
+        {
+            <tr>
+                <td>@status.Name</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@status.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@status.Id" class="btn btn-sm btn-info">Details</a>
+                    <form asp-action="Delete" asp-route-id="@status.Id" method="post" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this status?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

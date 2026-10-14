@@ -1,0 +1,1205 @@
+﻿@model HelpdeskSystem.Models.LoginViewModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Sign In | Help Desk Management System";
+}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>Sign In | Help Desk Management System</title>
+
+
+    <!-- =========================================================
+         BOOTSTRAP
+    ========================================================== -->
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <style>
+
+        /* =========================================================
+                   GLOBAL
+                ========================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #061329;
+        }
+
+
+        /* =========================================================
+                   MAIN BACKGROUND
+                ========================================================== */
+
+        .login-wrapper {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background: radial-gradient( circle at 10% 10%, rgba(37, 99, 235, .30), transparent 32% ), radial-gradient( circle at 90% 90%, rgba(14, 165, 233, .22), transparent 32% ), radial-gradient( circle at 50% 50%, rgba(30, 64, 175, .12), transparent 45% ), linear-gradient( 135deg, #030b1c 0%, #071b3a 45%, #092653 70%, #030b1c 100% );
+        }
+
+
+        /* =========================================================
+                   BACKGROUND CIRCLES
+                ========================================================== */
+
+        .background-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            border: 1px solid rgba(96, 165, 250, .15);
+            box-shadow: 0 0 80px rgba(37, 99, 235, .05);
+        }
+
+
+        .circle-one {
+            width: 500px;
+            height: 500px;
+            top: -270px;
+            left: -220px;
+        }
+
+
+        .circle-two {
+            width: 600px;
+            height: 600px;
+            right: -300px;
+            bottom: -300px;
+        }
+
+
+        /* =========================================================
+                   LOGIN CONTAINER
+                ========================================================== */
+
+        .login-container {
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 5;
+        }
+
+
+        /* =========================================================
+                   BRAND
+                ========================================================== */
+
+        .brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+
+        /* =========================================================
+                   HELP DESK ICON CONTAINER
+                ========================================================== */
+
+        .brand-icon {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            background: linear-gradient( 135deg, #2563eb 0%, #0ea5e9 55%, #22d3ee 100% );
+            border: 2px solid rgba(255,255,255,.35);
+            box-shadow: 0 0 0 6px rgba(37,99,235,.10), 0 15px 40px rgba(14,165,233,.35), inset 0 2px 0 rgba(255,255,255,.35);
+            position: relative;
+            z-index: 20;
+        }
+
+
+            /* =========================================================
+                   SVG HEADSET ICON
+                   WHITE
+                ========================================================== */
+
+            .brand-icon svg {
+                width: 46px;
+                height: 46px;
+                display: block;
+                fill: none;
+                stroke: #ffffff;
+                stroke-width: 2.4;
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                opacity: 1;
+                visibility: visible;
+                position: relative;
+                z-index: 50;
+            }
+
+
+                .brand-icon svg .headset-fill {
+                    fill: #ffffff;
+                    stroke: #ffffff;
+                }
+
+
+        /* =========================================================
+                   BRAND TEXT
+                ========================================================== */
+
+        .brand h1 {
+            margin: 0;
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            text-shadow: 0 2px 15px rgba(0,0,0,.35);
+        }
+
+
+        .brand p {
+            margin: 8px 0 0;
+            color: #b8c9df;
+            font-size: 13px;
+            letter-spacing: .4px;
+        }
+
+
+        /* =========================================================
+                   LOGIN CARD
+                ========================================================== */
+
+        .login-card {
+            padding: 38px 36px;
+            background: linear-gradient( 145deg, rgba(20, 47, 84, .88), rgba(8, 27, 55, .94) );
+            border: 1px solid rgba(96,165,250,.28);
+            border-radius: 22px;
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            box-shadow: 0 30px 80px rgba(0,0,0,.45), 0 0 40px rgba(37,99,235,.08), inset 0 1px 0 rgba(255,255,255,.10);
+        }
+
+
+            .login-card h2 {
+                margin: 0;
+                color: #ffffff;
+                font-size: 23px;
+                font-weight: 700;
+                letter-spacing: -.3px;
+            }
+
+
+        .subtitle {
+            margin: 8px 0 28px;
+            color: #a9bdd8;
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+                   LABELS
+                ========================================================== */
+
+        .form-label {
+            color: #edf5ff;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+
+        /* =========================================================
+                   FORM INPUTS
+                ========================================================== */
+
+        .form-control {
+            width: 100%;
+            height: 50px;
+            padding: 0 15px;
+            background: #0e2748;
+            border: 1px solid #3e6593;
+            border-radius: 10px !important;
+            color: #ffffff;
+            font-size: 14px;
+            transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+        }
+
+
+            .form-control::placeholder {
+                color: #91a9c7;
+            }
+
+
+            .form-control:hover {
+                border-color: #5581b4;
+            }
+
+
+            .form-control:focus {
+                background: #102d51;
+                border-color: #38bdf8;
+                color: #ffffff;
+                box-shadow: 0 0 0 3px rgba(56,189,248,.14), 0 0 15px rgba(37,99,235,.12);
+                outline: none;
+            }
+
+
+        /* =========================================================
+                   PASSWORD WRAPPER
+                ========================================================== */
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+
+            .password-wrapper .form-control {
+                padding-right: 55px !important;
+            }
+
+
+        /* =========================================================
+                   PASSWORD TOGGLE
+                   SMALL GRAY CIRCLE
+                ========================================================== */
+
+        .password-toggle {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            outline: none;
+            /* GRAY CIRCLE */
+            background: #6b7280;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 100;
+            -webkit-appearance: none;
+            appearance: none;
+            transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+        }
+
+
+            /* =========================================================
+                   PASSWORD TOGGLE HOVER
+                ========================================================== */
+
+            .password-toggle:hover {
+                background: #9ca3af;
+                transform: scale(1.05);
+                box-shadow: 0 3px 8px rgba(0,0,0,.35);
+            }
+
+
+            /* =========================================================
+                   PASSWORD TOGGLE ACTIVE
+                ========================================================== */
+
+            .password-toggle:active {
+                transform: scale(.95);
+            }
+
+
+            /* =========================================================
+                   PASSWORD TOGGLE FOCUS
+                ========================================================== */
+
+            .password-toggle:focus {
+                outline: none;
+                box-shadow: 0 0 0 2px rgba(156,163,175,.35);
+            }
+
+
+        /* =========================================================
+                   SVG EYE ICON
+                   WHITE
+                ========================================================== */
+
+        .password-icon {
+            width: 18px;
+            height: 18px;
+            display: block;
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            opacity: 1;
+            visibility: visible;
+            pointer-events: none;
+            filter: drop-shadow( 0 1px 2px rgba(0,0,0,.7) );
+            transition: transform .2s ease;
+        }
+
+
+        /* =========================================================
+                   EYE HOVER
+                ========================================================== */
+
+        .password-toggle:hover .password-icon {
+            stroke: #ffffff;
+            transform: scale(1.08);
+        }
+
+
+        /* =========================================================
+                   EYE STATES
+                ========================================================== */
+
+        .eye-open,
+        .eye-closed {
+            display: block;
+        }
+
+
+        .eye-closed {
+            display: none;
+        }
+
+
+        /* =========================================================
+                   REMEMBER / FORGOT
+                ========================================================== */
+
+        .form-check-label {
+            color: #a9bdd8;
+            font-size: 12px;
+        }
+
+
+        .form-check-input {
+            background-color: #0e2748;
+            border-color: #58779d;
+            cursor: pointer;
+        }
+
+
+            .form-check-input:focus {
+                border-color: #60a5fa;
+                box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+            }
+
+
+            .form-check-input:checked {
+                background-color: #2563eb;
+                border-color: #2563eb;
+            }
+
+
+        .forgot-link {
+            color: #60c7ff;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+
+            .forgot-link:hover {
+                color: #ffffff;
+                text-decoration: underline;
+            }
+
+
+        /* =========================================================
+                   SIGN IN BUTTON
+                ========================================================== */
+
+        .sign-in-btn {
+            width: 100%;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient( 135deg, #2563eb 0%, #0ea5e9 55%, #06b6d4 100% );
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(37,99,235,.30), inset 0 1px 0 rgba(255,255,255,.25);
+            transition: transform .25s ease, box-shadow .25s ease, filter .25s ease;
+        }
+
+
+            .sign-in-btn:hover {
+                color: #ffffff;
+                transform: translateY(-2px);
+                filter: brightness(1.08);
+                box-shadow: 0 16px 38px rgba(14,165,233,.38), 0 0 20px rgba(37,99,235,.18);
+            }
+
+
+            .sign-in-btn:active {
+                transform: translateY(0);
+            }
+
+
+        /* =========================================================
+                   SIGN IN SVG ICON
+                ========================================================== */
+
+        .sign-in-icon {
+            width: 19px;
+            height: 19px;
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: block;
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+                   VALIDATION
+                ========================================================== */
+
+        .text-danger {
+            color: #ff8c9a !important;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+
+        .validation-summary-errors ul {
+            margin-bottom: 0;
+            padding-left: 18px;
+        }
+
+
+        /* =========================================================
+                   BACK LINK
+                ========================================================== */
+
+        .back-link {
+            display: block;
+            margin-top: 24px;
+            text-align: center;
+            color: #a9bdd8;
+            font-size: 12px;
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+
+            .back-link:hover {
+                color: #ffffff;
+            }
+
+
+        /* =========================================================
+                   BACK ARROW SVG
+                ========================================================== */
+
+        .back-arrow-icon {
+            width: 15px;
+            height: 15px;
+            margin-right: 6px;
+            vertical-align: -2px;
+            fill: none;
+            stroke: #ffffff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+        }
+
+
+        /* =========================================================
+                   FOOTER
+                ========================================================== */
+
+        .login-footer {
+            margin-top: 23px;
+            text-align: center;
+            color: #7089aa;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+
+        /* =========================================================
+                   SECURITY SVG
+                ========================================================== */
+
+        .security-icon {
+            width: 13px;
+            height: 13px;
+            margin-right: 5px;
+            vertical-align: -2px;
+            fill: none;
+            stroke: #60c7ff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            display: inline-block;
+        }
+
+
+        /* =========================================================
+                   MOBILE
+                ========================================================== */
+
+        @@media (max-width: 480px) {
+
+            .login-wrapper {
+                padding: 25px 15px;
+            }
+
+
+            .login-container {
+                max-width: 100%;
+            }
+
+
+            .login-card {
+                padding: 30px 24px;
+                border-radius: 18px;
+            }
+
+
+            .brand h1 {
+                font-size: 22px;
+            }
+
+
+            .brand-icon {
+                width: 68px;
+                height: 68px;
+                border-radius: 18px;
+            }
+
+
+                .brand-icon svg {
+                    width: 40px;
+                    height: 40px;
+                }
+
+
+            .brand p {
+                font-size: 12px;
+            }
+
+
+            .password-toggle {
+                width: 34px;
+                height: 34px;
+                top: 8px;
+                right: 8px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="login-wrapper">
+
+
+        <!-- =====================================================
+             BACKGROUND DECORATION
+        ====================================================== -->
+
+        <div class="background-circle circle-one"></div>
+
+        <div class="background-circle circle-two"></div>
+
+
+
+        <div class="login-container">
+
+
+            <!-- =================================================
+                 BRAND
+            ================================================== -->
+
+            <div class="brand">
+
+
+                <!-- =============================================
+                     HELP DESK WHITE SVG ICON
+                ============================================== -->
+
+                <div class="brand-icon">
+
+                    <svg viewBox="0 0 64 64"
+                         aria-hidden="true">
+
+
+                        <!-- Headset band -->
+
+                        <path d="M12 34
+                                 C12 20 21 10 32 10
+                                 C43 10 52 20 52 34"
+                              fill="none"
+                              stroke="#ffffff"
+                              stroke-width="4"
+                              stroke-linecap="round" />
+
+
+                        <!-- Left ear -->
+
+                        <rect x="9"
+                              y="31"
+                              width="12"
+                              height="19"
+                              rx="5"
+                              fill="#ffffff"
+                              stroke="#ffffff" />
+
+
+                        <!-- Right ear -->
+
+                        <rect x="43"
+                              y="31"
+                              width="12"
+                              height="19"
+                              rx="5"
+                              fill="#ffffff"
+                              stroke="#ffffff" />
+
+
+                        <!-- Microphone -->
+
+                        <path d="M50 48
+                                 C50 55 45 58 38 58
+                                 H33"
+                              fill="none"
+                              stroke="#ffffff"
+                              stroke-width="4"
+                              stroke-linecap="round" />
+
+
+                        <!-- Microphone end -->
+
+                        <circle cx="31"
+                                cy="58"
+                                r="3"
+                                fill="#ffffff" />
+
+                    </svg>
+
+                </div>
+
+
+
+                <h1>
+                    Help Desk Management System
+                </h1>
+
+
+                <p>
+                    Centralized IT Support Portal
+                </p>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 LOGIN CARD
+            ================================================== -->
+
+            <div class="login-card">
+
+
+                <h2>
+                    Welcome back
+                </h2>
+
+
+                <p class="subtitle">
+                    Sign in to Help Desk Management System.
+                </p>
+
+
+
+                <form asp-action="Login"
+                      method="post">
+
+
+                    <!-- =========================================
+                         VALIDATION
+                    ========================================== -->
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
+
+
+
+                    <!-- =========================================
+                         EMAIL
+                    ========================================== -->
+
+                    <div class="mb-3">
+
+
+                        <label asp-for="Email"
+                               class="form-label">
+                        </label>
+
+
+                        <input asp-for="Email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               autocomplete="username" />
+
+
+                        <span asp-validation-for="Email"
+                              class="text-danger">
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- =========================================
+                         PASSWORD
+                    ========================================== -->
+
+                    <div class="mb-3">
+
+
+                        <label asp-for="Password"
+                               class="form-label">
+                        </label>
+
+
+
+                        <div class="password-wrapper">
+
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control"
+                                   placeholder="Enter your password"
+                                   id="password"
+                                   autocomplete="current-password" />
+
+
+
+                            <!-- =================================
+                                 SMALL GRAY CIRCLE
+                                 SHOW / HIDE PASSWORD
+                            ================================== -->
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    id="passwordToggle"
+                                    onclick="togglePassword()"
+                                    aria-label="Show password"
+                                    title="Show password">
+
+
+                                <svg class="password-icon"
+                                     id="passwordIcon"
+                                     viewBox="0 0 24 24"
+                                     aria-hidden="true">
+
+
+                                    <!-- =================================
+                                         OPEN EYE
+                                    ================================== -->
+
+                                    <g class="eye-open"
+                                       id="eyeOpen">
+
+
+                                        <path d="M2 12
+                                                 C5.5 5
+                                                 18.5 5
+                                                 22 12
+                                                 C18.5 19
+                                                 5.5 19
+                                                 2 12Z">
+                                        </path>
+
+
+                                        <circle cx="12"
+                                                cy="12"
+                                                r="3.5">
+                                        </circle>
+
+
+                                    </g>
+
+
+
+                                    <!-- =================================
+                                         CLOSED EYE
+                                    ================================== -->
+
+                                    <g class="eye-closed"
+                                       id="eyeClosed">
+
+
+                                        <!-- Slash -->
+
+                                        <path d="M3 3
+                                                 L21 21">
+                                        </path>
+
+
+                                        <!-- Left eye -->
+
+                                        <path d="M10.6 5.2
+                                                 C5.8 5.8
+                                                 2.8 9
+                                                 2 12
+                                                 C3.5 15.5
+                                                 7.2 18
+                                                 12 18
+                                                 C14 18
+                                                 15.8 17.5
+                                                 17.3 16.7">
+                                        </path>
+
+
+                                        <!-- Right eye -->
+
+                                        <path d="M13.4 18.8
+                                                 C18.2 18.2
+                                                 21.2 15
+                                                 22 12
+                                                 C20.8 9.2
+                                                 18.5 7
+                                                 15.7 6">
+                                        </path>
+
+
+                                    </g>
+
+
+                                </svg>
+
+
+                            </button>
+
+
+                        </div>
+
+
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+
+
+                    </div>
+
+
+
+                    <!-- =========================================
+                         REMEMBER / FORGOT
+                    ========================================== -->
+
+                    <div class="d-flex justify-content-between
+                                align-items-center mb-4">
+
+
+                        <div class="form-check">
+
+
+                            <input asp-for="RememberMe"
+                                   class="form-check-input" />
+
+
+                            <label asp-for="RememberMe"
+                                   class="form-check-label">
+                            </label>
+
+
+                        </div>
+
+
+
+                        <a asp-action="ForgotPassword"
+                           class="forgot-link">
+
+                            Forgot Password?
+
+                        </a>
+
+
+                    </div>
+
+
+
+                    <!-- =========================================
+                         SIGN IN
+                    ========================================== -->
+
+                    <button type="submit"
+                            class="sign-in-btn">
+
+
+                        <!-- SVG LOGIN ICON -->
+
+                        <svg class="sign-in-icon"
+                             viewBox="0 0 24 24"
+                             aria-hidden="true">
+
+
+                            <path d="M10 17
+                                     L15 12
+                                     L10 7">
+                            </path>
+
+
+                            <path d="M15 12
+                                     H3">
+                            </path>
+
+
+                            <path d="M14 5
+                                     H19
+                                     C20.1 5 21 5.9 21 7
+                                     V17
+                                     C21 18.1 20.1 19 19 19
+                                     H14">
+                            </path>
+
+
+                        </svg>
+
+
+                        <span>
+                            Sign In
+                        </span>
+
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 BACK TO WELCOME
+            ================================================== -->
+
+            <a asp-controller="Home"
+               asp-action="WelcomePage"
+               class="back-link">
+
+
+                <!-- SVG BACK ARROW -->
+
+                <svg class="back-arrow-icon"
+                     viewBox="0 0 24 24"
+                     aria-hidden="true">
+
+
+                    <path d="M19 12
+                             H5">
+                    </path>
+
+
+                    <path d="M12 19
+                             L5 12
+                             L12 5">
+                    </path>
+
+
+                </svg>
+
+
+                Back to Welcome Page
+
+
+            </a>
+
+
+
+            <!-- =================================================
+                 FOOTER
+            ================================================== -->
+
+            <div class="login-footer">
+
+
+                <!-- SVG SECURITY ICON -->
+
+                <svg class="security-icon"
+                     viewBox="0 0 24 24"
+                     aria-hidden="true">
+
+
+                    <path d="M12 3
+                             L20 6
+                             V11
+                             C20 16
+                             16.5 20
+                             12 22
+                             C7.5 20
+                             4 16
+                             4 11
+                             V6
+                             Z">
+                    </path>
+
+
+                    <path d="M8 12
+                             L11 15
+                             L16 9">
+                    </path>
+
+
+                </svg>
+
+
+                Secure access to your organization's IT support
+
+
+                <br />
+
+
+                <span>
+                    © @DateTime.Now.Year Help Desk Management System
+                </span>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         VALIDATION
+    ========================================================== -->
+
+    <partial name="_ValidationScriptsPartial" />
+
+
+
+    <!-- =========================================================
+         PASSWORD TOGGLE
+    ========================================================== -->
+
+    <script>
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const eyeOpen =
+                document.getElementById("eyeOpen");
+
+            const eyeClosed =
+                document.getElementById("eyeClosed");
+
+            const button =
+                document.getElementById("passwordToggle");
+
+
+            if (!password ||
+                !eyeOpen ||
+                !eyeClosed ||
+                !button) {
+
+                return;
+            }
+
+
+            /* =============================================
+               SHOW PASSWORD
+            ============================================== */
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                eyeOpen.style.display = "none";
+
+                eyeClosed.style.display = "block";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Hide password"
+                );
+
+            }
+
+
+            /* =============================================
+               HIDE PASSWORD
+            ============================================== */
+
+            else {
+
+                password.type = "password";
+
+                eyeOpen.style.display = "block";
+
+                eyeClosed.style.display = "none";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                button.setAttribute(
+                    "title",
+                    "Show password"
+                );
+
+            }
+
+        }
+
+    </script>
+
+
+</body>
+</html>

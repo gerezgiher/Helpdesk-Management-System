@@ -1,0 +1,73 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Block>
+
+@{
+    // ViewData["Title"] = "Blocks List";
+}
+
+<h2 class="text-center mb-4 text-primary">Blocks List</h2>
+
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-success">+ New Block</a>
+</div>
+
+<table id="blocksTable" class="table table-striped table-bordered custom-datatable">
+    <thead>
+        <tr>
+            <th>Block Name</th>
+            <th>Block Code</th>
+            <th>Floors</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Date Created</th>
+            <th>Date Modified</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var block in Model)
+        {
+            <tr>
+                <td>@block.BlockName</td>
+                <td>@block.BlockCode</td>
+                <td>@block.NumberOfFloors</td>
+                <td>@block.Location</td>
+                <td>@block.Description</td>
+                <td>@block.DateCreated.ToString("yyyy-MM-dd")</td>
+                <td>@block.DateModified?.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <form asp-action="ToggleStatus" asp-controller="Blocks" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@block.Id" />
+
+                        <button type="submit"
+                                class="btn btn-sm @(block.AvailabilityStatus == AvailabilityStatus.Active ? "btn-success" : "btn-danger")">
+                            @block.AvailabilityStatus
+                        </button>
+                    </form>
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@block.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@block.Id" class="btn btn-sm btn-outline-info"> Details </a>
+                    <form asp-action="Delete" asp-route-id="@block.Id" method="post" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this block?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* @section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#blocksTable').DataTable({
+                "order": [[0, "asc"]],
+                "columnDefs": [{ "orderable": false, "targets": -1 }]
+            });
+        });
+    </script>
+}
+ *@

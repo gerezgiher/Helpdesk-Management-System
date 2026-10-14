@@ -1,0 +1,103 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+
+@* <h2 class="text-center mb-4 text-primary">Requests</h2> *@
+
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-success">+ New  Request</a>
+</div>
+<h2 class="text-center mb-4 text-primary">Requests lists</h2>
+@* <table id="ticketsTable" class="table table-striped table-bordered custom-datatable"> *@
+    <table id="ticketsTable" class="table table-striped table-bordered custom-datatable">
+    <thead>
+        <tr>
+            <th>Full Name</th>
+            <th>Category</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Dept Head Approval</th>
+            <th>Request Status</th>
+            <th>Category</th>
+            <th>Created</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>
+
+                    @t.CreatedByEmployee?.FullName
+                </td>
+                <td>@t.Category?.Name</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@t.Id">@t.Title</a>
+                  @*   <div class="small text-muted">by @t.CreatedByEmployee?.FullName</div> *@
+                </td>
+                <td>
+                    <span class="badge @(GetPriorityBadge(t.Priority?.Name))">@t.Priority?.Name</span>
+                </td>
+                <td class="@(t.Approval?.Status == ApprovalStatus.Approved
+                 ? "text-success fw-bold"
+                 : t.Approval?.Status == ApprovalStatus.Rejected
+                 ? "text-danger fw-bold"
+                 : "warning text-dark")">
+                    @(t.Approval?.Status.ToString() ?? ApprovalStatus.Pending.ToString())
+                </td>
+
+
+
+                <td>
+                    <span class="badge @(GetStatusBadge(t.Status?.Name))">@t.Status?.Name</span>
+                </td>
+
+                <td>@t.Category?.Name</td>
+                <td>@t.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@t.Id" class="btn btn-sm btn-outline-info">View</a>
+                    <a asp-action="Edit" asp-route-id="@t.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+
+
+                    <form asp-action="Delete" asp-route-id="@t.Id" method="post" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this ticket?');">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+              
+                @*     @if (User.IsInRole("Admin") || User.IsInRole("Agent") ||
+                   (User.IsInRole("User") && t.Approval?.Status == HelpdeskSystem.Models.ApprovalStatus.Pending && t.CreatedById == User.FindFirst("sub")?.Value))
+                    {
+                      
+                    } *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@functions {
+    private string GetPriorityBadge(string name)
+    {
+        return name switch
+        {
+            "Low" => "bg-success",
+            "Medium" => "bg-warning text-dark",
+            "High" => "bg-danger",
+            "Critical" => "bg-dark text-white",
+            _ => "bg-secondary"
+        };
+    }
+
+    private string GetStatusBadge(string name)
+    {
+        return name switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "In Progress" => "bg-info text-dark",
+            "Resolved" => "bg-success",
+            "Closed" => "bg-secondary",
+            "Rejected" => "bg-danger",
+            _ => "bg-secondary"
+        };
+    }
+}

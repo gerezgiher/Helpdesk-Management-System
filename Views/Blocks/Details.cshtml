@@ -1,0 +1,39 @@
+﻿@model HelpdeskSystem.Models.Block
+
+@{
+    // ViewData["Title"] = "Block Details";
+}
+
+<h2 class="text-center mb-4 text-primary">Block Details</h2>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3 fw-bold">Block Name</dt>
+            <dd class="col-sm-9">@Model.BlockName</dd>
+
+            <dt class="col-sm-3 fw-bold">Block Code</dt>
+            <dd class="col-sm-9">@Model.BlockCode</dd>
+
+            <dt class="col-sm-3 fw-bold">Number of Floors</dt>
+            <dd class="col-sm-9">@Model.NumberOfFloors</dd>
+
+            <dt class="col-sm-3 fw-bold">Location</dt>
+            <dd class="col-sm-9">@Model.Location</dd>
+
+            <dt class="col-sm-3 fw-bold">Description</dt>
+            <dd class="col-sm-9">@Model.Description</dd>
+
+            <dt class="col-sm-3 fw-bold">Date Created</dt>
+            <dd class="col-sm-9">@Model.DateCreated.ToString("yyyy-MM-dd")</dd>
+
+            <dt class="col-sm-3 fw-bold">Date Modified</dt>
+            <dd class="col-sm-9">@Model.DateModified?.ToString("yyyy-MM-dd")</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="mb-3">
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-secondary me-2">Edit</a>
+    <a asp-action="Index" class="btn btn-outline-primary">Back to List</a>
+</div>

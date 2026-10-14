@@ -1,0 +1,28 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+
+<h2>All Tickets</h2>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td>@t.Id</td>
+                <td><a href="/Tickets/Details/@t.Id">@t.Title</a></td>
+                <td>@t.Status?.Name</td>
+                <td>@t.Priority?.Name</td>
+               <td>@t.CreatedAt.ToLocalTime().ToString("g")</td>
+
+            </tr>
+        }
+    </tbody>
+</table>

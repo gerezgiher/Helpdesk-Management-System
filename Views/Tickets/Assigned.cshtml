@@ -1,0 +1,122 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<HelpdeskSystem.Models.ApplicationUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+    var roles = await UserManager.GetRolesAsync(currentUser);
+    bool isAdmin = roles.Contains("Admin");
+
+    IEnumerable<HelpdeskSystem.Models.Ticket> ticketsToShow;
+
+    if (isAdmin)
+    {
+        // Admin sees all assigned tickets
+        ticketsToShow = Model.Where(t => t.AssignedTo != null);
+    }
+    else
+    {
+        // Agent sees only their assigned tickets
+        ticketsToShow = Model.Where(t => t.AssignedToId == currentUser.Id);
+    }
+}
+
+@* <h2>Assigned Tickets</h2> *@
+
+@if (isAdmin)
+{
+    <div class="alert alert-premary mb-3">
+        <strong>Assigned Requests</strong> @* Showing all agents and their assigned tickets. *@
+    </div>
+}
+else
+{
+    <h4 class="text-primary">Technician: @currentUser.FullName</h4>
+    <p class="text-muted"><strong>Email:</strong>@currentUser.Email</p>
+    <hr />
+}
+<table id="assignedTicketsTable" class="table table-striped table-bordered custom-datatable">
+    <thead>
+        <tr>
+            <th>Request Id</th>
+            <th>Category</th>
+            <th>Title</th>
+            <th>Created By</th>
+            @if (isAdmin)
+            {
+                <th>Assigned Technician</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+            }
+            <th>Dept Head Approval</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var ticket in ticketsToShow)
+        {
+            <tr>
+                <td>@ticket.Id</td>
+                <td>@ticket.Category?.Name</td>
+                <td>@ticket.Title</td>
+                <td>@ticket.CreatedByEmployee?.FullName</td>
+
+                @if (isAdmin)
+                {
+                    <td>@ticket.AssignedTo?.FullName</td>
+                    <td>@ticket.AssignedTo?.PhoneNumber</td>
+                    <td>@ticket.AssignedTo?.Email</td>
+                }
+
+                <td>@ticket.Approval?.Status</td>
+
+                <td>
+                    <span class="badge @GetStatusBadge(ticket.Status?.Name)">
+                        @ticket.Status?.Name
+                    </span>
+                </td>
+
+                <td>
+                    <a class="btn btn-sm btn-primary" href="/Tickets/Details/@ticket.Id">View</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@* @section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#assignedTicketsTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false
+            });
+        });
+    </script>
+} *@
+
+@functions {
+    public string GetStatusBadge(string name)
+    {
+        return name switch
+        {
+            "Pending" => "bg-warning text-dark",
+            "In Progress" => "bg-info text-dark",
+            "Resolved" => "bg-success",
+            "Rejected" => "bg-danger",
+            "Closed" => "bg-secondary",
+            _ => "bg-light text-dark"
+        };
+    }
+}
+

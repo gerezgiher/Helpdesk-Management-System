@@ -1,0 +1,74 @@
+﻿@model HelpdeskSystem.Models.ApplicationUser
+
+@{
+    var roles = ViewBag.Roles as List<Microsoft.AspNetCore.Identity.IdentityRole>;
+    var currentRole = ViewBag.CurrentRole as string; // e.g., "Admin"
+}
+
+@{
+    // ViewData["Title"] = "Assign Role";
+}
+
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form method="post" asp-action="AssignRole">
+            <input type="hidden" name="id" value="@Model.Id" />
+
+            <!-- Assign Role Panel -->
+            <div class="panel panel-default mb-4 border rounded shadow-sm">
+                <div class="panel-heading bg-light p-3 border-bottom rounded-top text-center">
+                    <h4 class="panel-title fw-bold">
+                        <span style="color:black;">Assign Role to:</span>
+                        <span class="text-darkcyan">@Model.FullName</span>
+                    </h4>
+
+                </div>
+
+                <div class="panel-body p-4">
+                    <div class="mb-3 w-100" style="max-width: 450px; margin:auto;">
+                        <div class="d-flex align-items-center">
+                            <label class="control-label fw-bold mb-0 me-3" style="min-width:120px;">Select Role</label>
+                            <select name="role" class="form-control" style="width:100%;">
+                                <option value="">-- Select Role --</option>
+                                @foreach (var role in roles)
+                                {
+                                    <option value="@role.Name" selected="@(role.Name == currentRole ? "selected" : null)">
+                                        @role.Name
+                                    </option>
+                                }
+                            </select>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary px-4 me-2">Assign Role</button>
+                <a href="/Admin/Users" class="btn btn-outline-secondary px-4">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <style>
+        .form-control {
+            width: 100% !important;
+        }
+
+        .field-validation-error {
+            display: block;
+            margin-top: 5px;
+        }
+
+        .text-darkcyan {
+            color: darkcyan;
+        }
+    </style>
+}

@@ -1,0 +1,10 @@
+﻿@model IEnumerable<TicketComment>
+@foreach (var c in Model)
+{
+    <div class="card mb-2">
+        <div class="card-body">
+            <strong>@(c.Author?.FullName ?? c.AuthorId)</strong> <small>@c.CreatedAt.ToLocalTime().ToString("g")</small>
+            <p>@c.Body</p>
+        </div>
+    </div>
+}

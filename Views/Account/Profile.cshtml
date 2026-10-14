@@ -1,0 +1,119 @@
+﻿@model HelpdeskSystem.Models.ProfileViewModel
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 rounded-4">
+
+        <!-- Header -->
+        <div class="card-header bg-white border-bottom py-3">
+            <h5 class="mb-0 fw-semibold text-primary">My Profile </h5>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+            <form method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-3">
+
+                    <!-- Email -->
+                    <!-- First Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">First Name</label>
+                        <input asp-for="FirstName" class="form-control form-control-lg" readonly />
+                        <span asp-validation-for="FirstName" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Middle Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">Middle Name</label>
+                        <input asp-for="MiddleName" class="form-control form-control-lg" readonly />
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="col-md-4">
+                        <label class="form-label">Last Name</label>
+                        <input asp-for="LastName" class="form-control form-control-lg" readonly />
+                        <span asp-validation-for="LastName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Full Name</label>
+                        <input asp-for="FullName" class="form-control form-control-lg" readonly />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Email" class="form-control form-control-lg" readonly />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div class="col-md-4">
+                        <label class="form-label">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control form-control-lg" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="col-md-4">
+                        <label class="form-label">Gender</label>
+                        <select asp-for="Gender" class="form-select form-select-lg"
+                                asp-items="Html.GetEnumSelectList<Gender>()">
+                            <option value="">-- Select Gender --</option>
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Department Dropdown -->
+                    <div class="col-md-4">
+                        <label class="form-label">Department</label>
+                        <select asp-for="DepartmentId"
+                                class="form-select form-select-lg"
+                                asp-items="@(new SelectList(Model.Departments, "Id", "DepartmentName"))">
+                            <option value="">-- Select Department --</option>
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Block Dropdown -->
+                    <div class="col-md-4">
+                        <label class="form-label">Block</label>
+                        <select asp-for="BlockId"
+                                class="form-select form-select-lg"
+                                asp-items="@(new SelectList(Model.Blocks, "Id", "BlockName"))">
+                            <option value="">-- Select Block --</option>
+                        </select>
+                        <span asp-validation-for="BlockId" class="text-danger small"></span>
+                    </div>
+
+                    <!-- Floors (Read only) -->
+                    <div class="col-md-4">
+                        <label class="form-label">Number of Floors</label>
+                        <input asp-for="NumberOfFloors" class="form-control form-control-lg" />
+                    </div>
+
+                    <!-- Hidden Fields -->
+                    <input type="hidden" asp-for="DepartmentId" />
+                    <input type="hidden" asp-for="BlockId" />
+
+                </div>
+
+                <!-- Footer -->
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-light btn-lg px-4">
+                        Back
+                    </a>
+
+
+                    <button type="submit" class="btn btn-success btn-lg px-4">
+                        Update Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

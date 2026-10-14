@@ -1,0 +1,138 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+/* ===== ECA STYLE ===== */
+
+body {
+    background-color: #f4f6f8;
+}
+
+/* Page container */
+.eca-page {
+    display: flex;
+    justify-content: center;
+    padding: 40px 15px;
+}
+
+/* Card */
+.eca-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 1100px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    padding: 30px;
+}
+
+/* Header */
+.eca-card-header {
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 25px;
+}
+
+    .eca-card-header h4 {
+        margin: 0;
+        font-weight: 600;
+        color: #0f766e; /* government teal */
+    }
+
+/* Rows */
+.eca-row {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+/* Fields */
+.eca-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.eca-field-full {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+    /* Labels */
+    .eca-field label,
+    .eca-field-full label {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #374151;
+    }
+
+/* Inputs */
+.eca-input {
+    height: 42px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+textarea.eca-input {
+    height: auto;
+}
+
+/* Focus */
+.eca-input:focus {
+    outline: none;
+    border-color: #0f766e;
+    box-shadow: 0 0 0 2px rgba(15,118,110,0.15);
+}
+
+/* Actions */
+.eca-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+/* Buttons */
+.eca-btn-primary {
+    background: #0f766e;
+    color: white;
+    border: none;
+    padding: 10px 26px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+    .eca-btn-primary:hover {
+        background: #115e59;
+    }
+
+.eca-btn-secondary {
+    border: 1px solid #d1d5db;
+    padding: 10px 26px;
+    border-radius: 8px;
+    color: #374151;
+    text-decoration: none;
+}
+
+    .eca-btn-secondary:hover {
+        background: #f3f4f6;
+    }

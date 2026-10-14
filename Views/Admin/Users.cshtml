@@ -1,0 +1,52 @@
+﻿ @model IEnumerable<HelpdeskSystem.Models.UserWithRoleViewModel>
+
+
+<div class="d-flex justify-content-between mb-3">
+    <a class="btn btn-primary" href="/Admin/CreateUser">
+        <i class="fas fa-user-plus me-1"></i> Create New User
+    </a>
+</div>
+
+<div class="table-responsive">
+    <table id="usersTable" class="table table-striped table-hover table-bordered align-middle custom-datatable">
+        <thead class="table-light">
+            <tr>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>UserName</th>
+                <th>Role</th>
+@*                 <th>Status</th> *@
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.FullName</td>
+                    <td>@u.Email</td>
+                    <td>@u.UserName</td>
+                    <td>@u.Role</td>
+                 @*    <td>
+                        <form asp-action="ToggleStatus" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@u.Id" />
+                            <button type="submit"
+                                    class="btn btn-sm @(u.AvailabilityStatus == AvailabilityStatus.Active ? "btn-success" : "btn-danger")">
+                                @u.AvailabilityStatus
+                            </button>
+                        </form>
+                    </td> *@
+                    <td>
+                        <a href="/Admin/EditUser/@u.Id" class="btn btn-sm btn-warning mb-1">Edit</a>
+                        <a href="/Admin/DeleteUser/@u.Id" class="btn btn-sm btn-danger mb-1"
+                           onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                        <a href="/Admin/AssignRole/@u.Id" class="btn btn-sm btn-info mb-1">Assign Roles</a>
+                        <a asp-controller="Admin" asp-action="ResetPasswordByAdmin" asp-route-id="@u.Id" class="btn btn-sm btn-secondary mb-1">
+                            Reset Password
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,108 @@
+﻿@model HelpdeskSystem.Models.TicketApproval
+@using HelpdeskSystem.Models
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="panel panel-default mb-4 border rounded shadow-sm">
+                <div class="panel-heading bg-light p-3 border-bottom rounded-top">
+                    <h4 class="panel-title fw-bold text-center" style="color:darkcyan">Request Approval</h4>
+                </div>
+
+                <div class="panel-body p-4">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <!-- Ticket Selection -->
+                            <div class="mb-3 w-100" style="max-width:450px;">
+                                <label asp-for="TicketId" class="fw-bold">Select Ticket</label>
+                                <select asp-for="TicketId" class="form-control" asp-items="ViewBag.TicketId">
+                                    <option value="">-- Select Ticket --</option>
+                                </select>
+                                <span asp-validation-for="TicketId" class="text-danger"></span>
+                            </div>
+
+                            <!-- Approver Selection -->
+                            <div class="mb-3 w-100" style="max-width:450px;">
+                                <label asp-for="ApprovedById" class="fw-bold">Approved By</label>
+                                <select asp-for="ApprovedById" class="form-control" asp-items="ViewBag.ApprovedById">
+                                    <option value="">-- Select Approver --</option>
+                                </select>
+                                <span asp-validation-for="ApprovedById" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <!-- Approval Status -->
+                            <div class="mb-3 w-100" style="max-width:450px;">
+                                <label asp-for="Status" class="fw-bold">Status</label>
+                                <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<ApprovalStatus>()" id="Status">
+                                    <option value="">-- Select Status --</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+
+                            <!-- Decision Date (readonly) -->
+                            <div class="mb-3 w-100" style="max-width:450px;">
+                                <label asp-for="DecisionDate" class="fw-bold">Decision Date</label>
+                                <input asp-for="DecisionDate" class="form-control" type="datetime-local" readonly />
+                                <span asp-validation-for="DecisionDate" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rejection Reason -->
+                    <div class="mb-3 w-100 mt-3" id="rejectionDiv">
+                        <label asp-for="RejectionReason" class="fw-bold">Rejection Reason (if rejected)</label>
+                        <textarea asp-for="RejectionReason" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="RejectionReason" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary px-4 me-2">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary px-4">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const statusDropdown = document.getElementById("Status");
+        const rejectionDiv = document.getElementById("rejectionDiv");
+
+        function toggleRejection() {
+            // Show only if "Rejected" is selected
+            const rejectedValues = ["Rejected", "2"]; // Enum text or numeric value
+            rejectionDiv.style.display = rejectedValues.includes(statusDropdown.value) ? "block" : "none";
+        }
+
+        statusDropdown.addEventListener("change", toggleRejection);
+        toggleRejection();
+    </script>
+
+    <style>
+        .form-control {
+            width: 100% !important;
+        }
+
+        .field-validation-error {
+            display: block;
+            margin-top: 5px;
+        }
+
+        select.form-control {
+            height: 38px;
+        }
+    </style>
+}

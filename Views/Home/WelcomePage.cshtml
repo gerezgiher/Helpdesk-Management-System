@@ -1,0 +1,874 @@
+﻿@{
+    Layout = null;
+    ViewData["Title"] = "Help Desk Management System";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Help Desk Management System</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+          href="~/lib/fontawesome/css/all.min.css" />
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: #ffffff;
+            background: #06152f;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* =========================================================
+                   MAIN BACKGROUND
+                ========================================================= */
+
+        .page-wrapper {
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+            background: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.30), transparent 30%), radial-gradient(circle at 90% 15%, rgba(14, 165, 233, 0.22), transparent 28%), radial-gradient(circle at 80% 85%, rgba(124, 58, 237, 0.20), transparent 30%), linear-gradient( 135deg, #06152f 0%, #0a2450 45%, #071a38 100% );
+        }
+
+        /* Decorative circles */
+
+        .background-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+
+        .circle-one {
+            width: 350px;
+            height: 350px;
+            top: -150px;
+            left: -100px;
+            border: 1px solid rgba(255,255,255,.08);
+            box-shadow: 0 0 80px rgba(37,99,235,.18);
+        }
+
+        .circle-two {
+            width: 500px;
+            height: 500px;
+            right: -250px;
+            bottom: -250px;
+            border: 1px solid rgba(255,255,255,.06);
+        }
+
+        /* =========================================================
+                   NAVBAR
+                ========================================================= */
+
+        .navbar {
+            height: 78px;
+            position: relative;
+            z-index: 10;
+            background: rgba(4, 18, 42, .72);
+            border-bottom: 1px solid rgba(255,255,255,.10);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+        }
+
+            .navbar .container {
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: #ffffff;
+        }
+
+        .brand-icon {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: linear-gradient( 135deg, #2563eb, #0ea5e9 );
+            color: #ffffff;
+            font-size: 20px;
+            box-shadow: 0 10px 30px rgba(37,99,235,.35);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+            .brand-text strong {
+                font-size: 17px;
+                font-weight: 700;
+                letter-spacing: .2px;
+            }
+
+            .brand-text span {
+                margin-top: 5px;
+                color: #91a4c2;
+                font-size: 9px;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+            }
+
+        .login-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 11px 20px;
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 9px;
+            background: rgba(255,255,255,.08);
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .25s ease;
+        }
+
+            .login-btn:hover {
+                color: #ffffff;
+                background: #2563eb;
+                border-color: #2563eb;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(37,99,235,.30);
+            }
+
+        /* =========================================================
+                   HERO
+                ========================================================= */
+
+        .hero {
+            min-height: 570px;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 850px;
+            margin: auto;
+            padding: 80px 20px 70px;
+        }
+
+        /* System icon */
+
+        .system-icon {
+            width: 82px;
+            height: 82px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            background: linear-gradient( 135deg, #2563eb, #0ea5e9 );
+            color: #ffffff;
+            font-size: 34px;
+            box-shadow: 0 20px 50px rgba(37,99,235,.35), inset 0 1px 0 rgba(255,255,255,.25);
+            animation: floatIcon 4s ease-in-out infinite;
+        }
+
+        @@keyframes floatIcon {
+
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Badge */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 30px;
+            background: rgba(255,255,255,.07);
+            color: #b7cdf2;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.6px;
+            backdrop-filter: blur(10px);
+        }
+
+            .badge i {
+                font-size: 7px;
+                color: #22c55e;
+                filter: drop-shadow( 0 0 5px rgba(34,197,94,.8) );
+            }
+
+        /* Hero title */
+
+        .hero h1 {
+            margin: 25px auto 18px;
+            max-width: 800px;
+            font-size: 52px;
+            line-height: 1.12;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+        }
+
+            .hero h1 span {
+                display: block;
+                background: linear-gradient( 90deg, #60a5fa, #38bdf8, #a78bfa );
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+        .hero p {
+            max-width: 680px;
+            margin: 0 auto;
+            color: #a9bad4;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        /* Main login button */
+
+        .main-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            margin-top: 32px;
+            padding: 15px 25px;
+            color: #ffffff;
+            border-radius: 10px;
+            background: linear-gradient( 135deg, #2563eb, #0ea5e9 );
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 15px 35px rgba(37,99,235,.35);
+            transition: all .25s ease;
+        }
+
+            .main-button:hover {
+                color: #ffffff;
+                transform: translateY(-3px);
+                box-shadow: 0 20px 45px rgba(37,99,235,.45);
+            }
+
+        /* =========================================================
+                   SERVICES
+                ========================================================= */
+
+        .information {
+            position: relative;
+            z-index: 3;
+            padding: 75px 0 85px;
+            background: rgba(3, 15, 34, .72);
+            border-top: 1px solid rgba(255,255,255,.07);
+            border-bottom: 1px solid rgba(255,255,255,.07);
+            backdrop-filter: blur(15px);
+        }
+
+        .section-heading {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 45px;
+        }
+
+            .section-heading span {
+                color: #60a5fa;
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 2px;
+            }
+
+            .section-heading h2 {
+                margin: 10px 0;
+                font-size: 31px;
+                font-weight: 800;
+            }
+
+            .section-heading p {
+                margin: 0;
+                color: #8fa4c2;
+                font-size: 13px;
+            }
+
+        /* Cards */
+
+        .info-card {
+            height: 100%;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 16px;
+            background: rgba(255,255,255,.055);
+            backdrop-filter: blur(14px);
+            transition: transform .25s ease, border .25s ease, box-shadow .25s ease;
+        }
+
+            .info-card:hover {
+                transform: translateY(-7px);
+                border-color: rgba(96,165,250,.45);
+                box-shadow: 0 20px 50px rgba(0,0,0,.25);
+            }
+
+        .info-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-radius: 13px;
+            color: #ffffff;
+            font-size: 18px;
+        }
+
+            .info-icon.blue {
+                background: linear-gradient( 135deg, #2563eb, #3b82f6 );
+            }
+
+            .info-icon.green {
+                background: linear-gradient( 135deg, #059669, #22c55e );
+            }
+
+            .info-icon.purple {
+                background: linear-gradient( 135deg, #7c3aed, #a855f7 );
+            }
+
+        .info-card h3 {
+            margin-bottom: 9px;
+            color: #ffffff;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: #8fa4c2;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        /* =========================================================
+                   LOGIN CTA
+                ========================================================= */
+
+        .login-section {
+            position: relative;
+            z-index: 4;
+            padding: 45px 0;
+            background: linear-gradient( 135deg, #155eef, #0875d1, #2563eb );
+        }
+
+        .login-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+        }
+
+            .login-content h2 {
+                margin: 0 0 7px;
+                color: #ffffff;
+                font-size: 24px;
+                font-weight: 750;
+            }
+
+            .login-content p {
+                margin: 0;
+                color: rgba(255,255,255,.75);
+                font-size: 13px;
+            }
+
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            padding: 12px 23px;
+            color: #155eef;
+            border-radius: 9px;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all .2s ease;
+        }
+
+            .cta-button:hover {
+                color: #155eef;
+                transform: translateY(-2px);
+                box-shadow: 0 10px 25px rgba(0,0,0,.18);
+            }
+
+        /* =========================================================
+                   FOOTER
+                ========================================================= */
+
+        footer {
+            position: relative;
+            z-index: 5;
+            padding: 24px 0;
+            background: #030b1b;
+            color: #7185a2;
+        }
+
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            font-size: 11px;
+        }
+
+            .footer-content div {
+                display: flex;
+                align-items: center;
+                gap: 9px;
+            }
+
+            .footer-content i {
+                color: #3b82f6;
+            }
+
+            .footer-content strong {
+                color: #ffffff;
+                font-weight: 600;
+            }
+
+        /* =========================================================
+                   RESPONSIVE
+                ========================================================= */
+
+        @@media (max-width: 767px) {
+
+            .navbar {
+                height: 70px;
+            }
+
+            .brand-text span {
+                display: none;
+            }
+
+            .login-btn {
+                padding: 9px 14px;
+            }
+
+            .hero {
+                min-height: auto;
+            }
+
+            .hero-content {
+                padding: 65px 18px;
+            }
+
+            .system-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 29px;
+            }
+
+            .hero h1 {
+                font-size: 37px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .main-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .information {
+                padding: 60px 15px;
+            }
+
+            .login-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @@media (max-width: 480px) {
+
+            .brand-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .brand-text strong {
+                font-size: 15px;
+            }
+
+            .login-btn span {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .hero p {
+                font-size: 13px;
+            }
+
+            .section-heading h2 {
+                font-size: 26px;
+            }
+        }
+
+        .system-icon i {
+            color: #ffffff !important;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="page-wrapper">
+
+        <!-- Decorative background -->
+        <div class="background-circle circle-one"></div>
+        <div class="background-circle circle-two"></div>
+
+
+        <!-- =========================================================
+             NAVBAR
+        ========================================================== -->
+
+        <nav class="navbar">
+
+            <div class="container">
+
+                <a asp-controller="Home"
+                   asp-action="WelcomePage"
+                   class="brand">
+
+                    <div class="brand-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+
+                    <div class="brand-text">
+
+                        <strong>
+                            Help Desk
+                        </strong>
+
+                        <span>
+                            Management System
+                        </span>
+
+                    </div>
+
+                </a>
+
+
+                <a asp-controller="Account"
+                   asp-action="Login"
+                   class="login-btn">
+
+                    <i class="fas fa-sign-in-alt"></i>
+
+                    <span>
+                        Sign In
+                    </span>
+
+                </a>
+
+            </div>
+
+        </nav>
+
+
+        <!-- =========================================================
+             HERO
+        ========================================================== -->
+
+        <section class="hero">
+
+            <div class="container">
+
+                <div class="hero-content">
+              
+                    <div class="system-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+
+
+                    <div class="badge">
+
+                        <i class="fas fa-circle"></i>
+
+                        IT SUPPORT PORTAL
+
+                    </div>
+
+
+                    <h1>
+
+                        Welcome to
+
+                        <span>
+                            Help Desk Management System
+                        </span>
+
+                    </h1>
+
+
+                    <p>
+
+                        A centralized IT support platform designed to
+                        submit, track, manage and resolve technical
+                        support requests efficiently across your organization.
+
+                    </p>
+
+
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="main-button">
+
+                        <i class="fas fa-sign-in-alt"></i>
+
+                        Sign In to Help Desk
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             SERVICES
+        ========================================================== -->
+
+        <section class="information">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span>
+                        HELP DESK SERVICES
+                    </span>
+
+                    <h2>
+                        IT Support Made Simple
+                    </h2>
+
+                    <p>
+                        Everything you need to manage your organization's
+                        IT support requests in one centralized system.
+                    </p>
+
+                </div>
+
+
+                <div class="row g-4">
+
+                    <!-- Submit -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <div class="info-card">
+
+                            <div class="info-icon blue">
+
+                                <i class="fas fa-ticket-alt"></i>
+
+                            </div>
+
+                            <h3>
+                                Submit Requests
+                            </h3>
+
+                            <p>
+                                Submit technical support requests and
+                                report IT problems directly to the support team.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Track -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <div class="info-card">
+
+                            <div class="info-icon green">
+
+                                <i class="fas fa-chart-line"></i>
+
+                            </div>
+
+                            <h3>
+                                Track Requests
+                            </h3>
+
+                            <p>
+                                Monitor the status and progress of your
+                                support requests from submission to resolution.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Support -->
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <div class="info-card">
+
+                            <div class="info-icon purple">
+
+                                <i class="fas fa-users-cog"></i>
+
+                            </div>
+
+                            <h3>
+                                IT Support Team
+                            </h3>
+
+                            <p>
+                                Support teams can assign, manage and resolve
+                                technical issues efficiently and professionally.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             LOGIN CTA
+        ========================================================== -->
+
+        <section class="login-section">
+
+            <div class="container">
+
+                <div class="login-content">
+
+                    <div>
+
+                        <h2>
+                            Need IT Support?
+                        </h2>
+
+                        <p>
+                            Sign in to access your Help Desk Management System.
+                        </p>
+
+                    </div>
+
+
+                    <a asp-controller="Account"
+                       asp-action="Login"
+                       class="cta-button">
+
+                        <i class="fas fa-sign-in-alt"></i>
+
+                        Sign In
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================================
+             FOOTER
+        ========================================================== -->
+
+        <footer>
+
+            <div class="container">
+
+                <div class="footer-content">
+
+                    <div>
+
+                        <i class="fas fa-headset"></i>
+
+                        <strong>
+                            Help Desk Management System
+                        </strong>
+
+                    </div>
+
+                    <span>
+
+                        © @DateTime.Now.Year
+                        All Rights Reserved.
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </footer>
+
+    </div>
+
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+</body>
+
+</html>

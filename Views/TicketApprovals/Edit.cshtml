@@ -1,0 +1,39 @@
+﻿@model HelpdeskSystem.Models.TicketApproval
+
+@{
+    ViewData["Title"] = "Edit Ticket Approval";
+}
+
+<h2>Edit Ticket Approval</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="TicketId" class="form-label">Ticket</label>
+        <select asp-for="TicketId" class="form-select" asp-items="ViewBag.TicketId" disabled></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ApprovedById" class="form-label">Approved By</label>
+        <select asp-for="ApprovedById" class="form-select" asp-items="ViewBag.ApprovedById" disabled></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Status</label>
+        <select asp-for="Status" class="form-select" asp-items="ViewBag.Status" required></select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RejectionReason" class="form-label">Rejection Reason (if rejected)</label>
+        <textarea asp-for="RejectionReason" class="form-control"></textarea>
+        <span asp-validation-for="RejectionReason" class="text-danger"></span>
+    </div>
+    <div class="form-group text-center mt-4">
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

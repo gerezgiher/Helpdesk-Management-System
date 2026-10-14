@@ -1,0 +1,24 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Ticket>
+
+
+<h2 class="text-center mb-4 text-primary">Agent Performance Report</h2>
+<table id="agentPerformanceTable" class="table table-bordered table-striped custom-datatable w-100">
+    <thead>
+        <tr>
+            <th>Agent</th>
+            <th>Ticket Title</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var ticket in Model)
+        {
+            <tr>
+                <td>@ticket.AssignedTo?.FullName</td>
+                <td>@ticket.Title</td>
+                <td>@ticket.Status?.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

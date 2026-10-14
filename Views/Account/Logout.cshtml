@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<HelpdeskSystem.Models.ApplicationUser> SignInManager
+@inject UserManager<HelpdeskSystem.Models.ApplicationUser> UserManager
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Helpdesk</a>
+
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <li class="nav-item">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link">Logout</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>

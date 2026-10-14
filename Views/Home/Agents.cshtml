@@ -1,0 +1,68 @@
+﻿@model HelpdeskSystem.Models.HomeDashboardViewModel
+
+<!-- ======================= FULL SCREEN DATA TABLE ======================= -->
+<div class="container-fluid px-0">
+    <div class="card shadow-sm border-0 rounded-0">
+
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h5 class="m-0 font-weight-bold text-primary">Technicians</h5>
+            <span class="badge bg-primary">@Model.Agents.Count() Technicians</span>
+        </div>
+
+        <div class="card-body p-0">
+            <div class="table-responsive">
+
+                <!-- IMPORTANT: Add class="custom-datatable" and fix table ID -->
+                <table id="agentsTable" class="table table-striped table-bordered custom-datatable w-100 custom-datatable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone Number</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th class="text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var agent in Model.Agents)
+                        {
+                            <tr data-href="@Url.Action("Details", "Users", new { id = agent.Id })">
+                                <td>@agent.FullName</td>
+                                <td>@agent.PhoneNumber</td>
+                                <td>@agent.Email</td>
+                                <td>
+                                    <form asp-action="ToggleAgentStatus"
+                                          asp-controller="Home"
+                                          method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@agent.Id" />
+
+                                        <button type="submit"
+                                                class="btn btn-sm @(agent.AvailabilityStatus == AvailabilityStatus.Active ? "btn-success" : "btn-danger")">
+                                            @agent.AvailabilityStatus
+                                        </button>
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-controller="Admin" asp-action="EditUser" asp-route-id="@agent.Id"
+                                       class="btn btn-sm btn-warning">
+                                        Edit
+                                    </a>
+
+                                    <a asp-controller="Admin" asp-action="DeleteUser" asp-route-id="@agent.Id"
+                                       class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this user?');">
+                                        Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>

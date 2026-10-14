@@ -1,0 +1,677 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using HelpdeskSystem.Data
+@using HelpdeskSystem.Models
+@using Microsoft.EntityFrameworkCore   @* <- Needed for CountAsync *@
+@inject UserManager<ApplicationUser> UserManager
+@inject HelpDeskContext Db
+
+@{
+    int agentCount = 0;
+    int unreadNotificationCount = 0;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var currentUser = await UserManager.GetUserAsync(User);
+
+        if (currentUser != null)
+        {
+            // Count agents
+            var agents = await UserManager.GetUsersInRoleAsync("Agent");
+            agentCount = agents.Count;
+
+            // Count unread notifications for the current user
+            unreadNotificationCount = await Db.Notifications
+                .Where(n => n.UserId == currentUser.Id && !n.IsRead)
+                .CountAsync();
+        }
+    }
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - HelpDesk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- AdminLTE -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css" />
+
+    <style>
+        body {
+            background: radial-gradient( circle, rgba(255,255,255,0.95) 0%, rgba(5,80,109,0.25) 100% ) !important;
+        }
+
+        .main-sidebar {
+            background: radial-gradient(rgba(5,80,89,0.1) 0%, rgba(5,80,109,0.8) 100%) !important;
+        }
+
+        .main-header {
+            background: linear-gradient(270deg, rgba(5,80,109,0.8) 60%, rgba(5,80,89,0.1) 100%) !important;
+        }
+
+        .brand-link {
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+        }
+
+      /*   .nav-link:hover {
+            color: #0d6efd;
+        } */
+
+        .content-wrapper {
+            background-color: #f4f6f9;
+        }
+
+        .helpdesk-brand {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+            .helpdesk-brand img {
+                height: 33px;
+                width: 33px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+
+            .helpdesk-brand span {
+                color: white;
+                font-weight: bold;
+                font-size: 1.2rem;
+            }
+
+        /* DataTables custom styling */
+        .dataTables_wrapper .dataTables_filter input {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 6px 12px;
+            margin-left: 10px;
+        }
+
+        .dataTables_length select {
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 4px;
+        }
+
+        .dataTables_info {
+            padding-top: 0.85em !important;
+        }
+
+        .dataTables_paginate .paginate_button {
+            padding: 0.3em 0.8em !important;
+            margin: 0 2px;
+        }
+
+        .dataTables_length select {
+            width: 80px !important;
+            height: 36px !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            border: 1px solid #ced4da !important;
+            background-color: #fff !important;
+            font-size: 14px !important;
+        }
+
+        .dataTables_length label {
+            font-size: 15px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- NAVBAR -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- LEFT NAV: Hamburger + Home -->
+            <ul class="navbar-nav">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                            <i class="fas fa-bars"></i>
+                        </a>
+                    </li>
+                }
+
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a class="nav-link" href="/" style="color:black">Home</a>
+                </li>
+            </ul>
+
+            <!-- CENTER NAV: Notifications -->
+            @if (User.Identity.IsAuthenticated)
+            {
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item dropdown text-center">
+                        <a class="nav-link position-relative d-flex align-items-center justify-content-center" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-bell me-1"></i>
+                            <span>Notifications</span>
+
+                            @if (unreadNotificationCount > 0)
+                            {
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                    @unreadNotificationCount
+                                </span>
+                            }
+                        </a>
+
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown" style="width: 300px;">
+                            @{
+                                var currentUser = UserManager.GetUserAsync(User).Result;
+                                var notifications = Db.Notifications
+                                .Where(n => n.UserId == currentUser.Id)
+                                .OrderByDescending(n => n.Id)
+                                .Take(5)
+                                .ToList();
+                            }
+
+                            @if (!notifications.Any())
+                            {
+                                <li class="dropdown-item text-center text-muted">No notifications</li>
+                            }
+                            else
+                            {
+                                foreach (var notification in notifications)
+                                {
+                                    <li>
+                                        <a class="dropdown-item d-flex justify-content-between align-items-center" href="/Notifications/Index">
+                                            <span>@notification.Message</span>
+                                            @if (!notification.IsRead)
+                                            {
+                                                <i class="fas fa-circle text-primary ms-2" style="font-size:8px;"></i>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            }
+
+                            <li><hr class="dropdown-divider" /></li>
+                            <li><a class="dropdown-item text-center" href="/Notifications/Index">View All</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            }
+
+            <!-- RIGHT NAV: Profile / Logout -->
+            <ul class="navbar-nav ml-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="btn btn-outline-dark btn-sm" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user me-1"></i> Profile
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="/Account/Profile">
+                                    <i class="fas fa-cog me-1"></i> Change Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="/Account/ChangePassword">
+                                    <i class="fas fa-key me-1"></i> Change Password
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item ms-2">
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-flex">
+                            <button type="submit" class="btn btn-outline-dark btn-sm">
+                                <i class="fas fa-sign-out-alt me-1"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-dark btn-sm" href="/Account/Login">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </li>
+                   @*  <li class="nav-item">
+                        <a class="btn btn-primary btn-sm" href="/Account/Register">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </li> *@
+                }
+            </ul>
+        </nav>
+
+        <!-- SIDEBAR -->
+        <!-- SIDEBAR -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <aside class="main-sidebar elevation-4">
+                <!-- BRAND -->
+                <a href="/" class="brand-link helpdesk-brand">
+                    <i class="fas fa-headset brand-image img-circle elevation-3" style="color: white; font-size: 1.5rem; margin-right: 10px;"></i>
+                    <span>HelpDesk</span>
+                </a>
+
+                <div class="sidebar">
+                    <!-- USER PANEL -->
+                    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                        <div class="image">
+                            <i class="fas fa-user-circle img-circle elevation-2" style="color: white; font-size: 2rem;"></i>
+                        </div>
+                        <div class="info">
+                            <a class="d-block" style="color: white;">@User.Identity.Name</a>
+                            <small style="color: rgba(255,255,255,0.7);">
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <i class="fas fa-crown"></i> @:Administrator
+                                }
+                                else if (User.IsInRole("Agent"))
+                                {
+                                    <i class="fas fa-user-shield"></i> @:Support Agent
+                                }
+                                else if (User.IsInRole("DepartmentHead"))
+                                {
+                                    <i class="fas fa-user-shield"></i> @:Department Head
+                                }
+                                else
+                                {
+                                    <i class="fas fa-user"></i> @:User
+                                }
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- MENU -->
+                    <nav class="mt-2">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview">
+
+                            <!-- DASHBOARD -->
+                            <li class="nav-item">
+                                <a href="/Home/Index" class="nav-link">
+                                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                                    <p style="color: black">Dashboard</p>
+                                </a>
+                            </li>
+
+                            <!-- SUBMIT REQUEST -->
+                            <li class="nav-item">
+                                <a href="/Tickets/Create" class="nav-link">
+                                    <i class="nav-icon fas fa-plus-circle"></i>
+                                    <p style="color: black">Submit Request</p>
+                                </a>
+                            </li>
+
+                            <!-- MY REQUESTS / ALL REQUESTS / REQUESTS FOR APPROVAL -->
+                            <li class="nav-item">
+                                <a href="/Tickets" class="nav-link">
+                                    <i class="nav-icon fas fa-list"></i>
+                                    <p style="color: black">
+                                        @{
+                                            if (User.IsInRole("Admin"))
+                                            {
+                                                @:All Requests
+                                            }
+                                            else if (User.IsInRole("DepartmentHead"))
+                                            {
+                                                @:Task Assignment
+                                            }
+                                            else
+                                            {
+                                                @:My Requests
+                                            }
+                                        }
+                                    </p>
+                                </a>
+                            </li>
+
+                            <!-- ASSIGNED TASKS (Admin + Agent) -->
+                            @if (User.IsInRole("Admin") || User.IsInRole("Agent"))
+                            {
+                                <li class="nav-item">
+                                    <a href="/Tickets/Assigned" class="nav-link">
+                                        <i class="nav-icon fas fa-tasks"></i>
+                                        <p style="color: black">
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                @:All Assigned Tasks
+                                            }
+                                            else
+                                            {
+                                                @:Assigned Tasks
+                                            }
+                                        </p>
+                                    </a>
+                                </li>
+                            }
+
+                            <!-- Remaining Admin menus -->
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <!-- Employee Registration -->
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-users"></i>
+                                        <p style="color: black">
+                                            Employee Management
+                                            <i class="right fas fa-angle-left"></i>
+                                        </p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/EmployeeRegister/Create" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Register Employee</p></a></li>
+                                        <li class="nav-item"><a href="/EmployeeRegister/Index" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">View Employees</p></a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Department -->
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-building"></i>
+                                        <p style="color: black">DepartmentManagement <i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/Departments/Create" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Register Department</p></a></li>
+                                        <li class="nav-item"><a href="/Departments" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">View Departments</p></a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- Blocks -->
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-building"></i>
+                                        <p style="color: black">Block Management <i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/Blocks/Create" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Register Blocks</p></a></li>
+                                        <li class="nav-item"><a href="/Blocks" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">View Blocks</p></a></li>
+                                    </ul>
+                                </li>
+
+                                <!-- User Management -->
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-users-cog"></i>
+                                        <p style="color: black">User Management <i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/Admin/Users" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Manage Users</p></a></li>
+                                        <li class="nav-item"><a href="/Admin/Roles" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Manage Roles</p></a></li>
+                                    </ul>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/Home/Agents" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Manage Technicians <span class="badge bg-primary ml-2">@agentCount</span></p></a></li>
+                                        @*  <li class="nav-item"><a href="/Admin/AssignAgent" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Assign Agents</p></a></li> *@
+                                    </ul>
+                                </li>
+
+                                <!-- Agent Management -->
+                             @*    <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-user-shield"></i>
+                                        <p style="color: black">Agent Management <i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a href="/Home/Agents" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Technicians <span class="badge bg-primary ml-2">@agentCount</span></p></a></li>
+                                        <li class="nav-item"><a href="/Admin/AssignAgent" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Assign Agents</p></a></li>
+                                    </ul>
+                                </li> *@
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-cogs"></i>
+                                        <p style="color: black">Ticket Settings <i class="right fas fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item"><a asp-controller="Categories" asp-action="Index" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black;">Request Category</p></a></li>
+                                        <li class="nav-item"><a asp-controller="Status" asp-action="Index" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black;">Request Status</p></a></li>
+                                        <li class="nav-item"><a asp-controller="Priorities" asp-action="Index" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black;">Urgency</p></a></li>
+                                    </ul>
+                                </li>
+                                <!-- Reports -->
+                                @*                            <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <p style="color: black">Reports <i class="right fas fa-angle-left"></i></p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                        <li class="nav-item"><a href="/Reports/TicketStatus" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Ticket Status</p></a></li>
+                        <li class="nav-item"><a href="/Reports/AgentPerformance" class="nav-link"><i class="far fa-circle nav-icon"></i><p style="color:black">Agent Performance</p></a></li>
+                        </ul>
+                        </li> *@
+                            }
+
+                            <!-- Agent Sections (Admin + Agent) -->
+                            <!-- Ticket Settings (Admin + optionally Agent) -->
+                            @if (User.IsInRole("Admin"))
+                            {
+
+                            }
+
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+        }
+
+
+        <!-- PAGE CONTENT -->
+        <div class="content-wrapper">
+            <div class="content-header">
+                <div class="container-fluid">
+                    <h1 class="m-0">@ViewData["Title"]</h1>
+                </div>
+            </div>
+
+            <section class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+            </section>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="main-footer text-center">
+            <strong>&copy; 2025 - HelpDesk</strong>
+        </footer>
+    </div>
+
+    <!-- MESSAGE MODAL -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalMessageContent">
+                    <!-- Message content will be inserted here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <!-- SCRIPTS -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- AdminLTE JS -->
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+
+
+    <script>
+        $(function () {
+            // ==========================
+            // Initialize all DataTables by class
+            // ==========================
+            $('.custom-datatable').each(function () {
+                let tableId = $(this).attr('id');
+                let table = $('#' + tableId).DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true,
+                    autoWidth: true,
+                    lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                    responsive: true,
+                    dom: '<"top d-flex justify-content-between"lf>rt<"bottom"ip><"clear">',
+                    language: {
+                        search: "_INPUT_",
+                        searchPlaceholder:"Type here to search"
+                    },
+                    columnDefs: [
+                        {
+                            orderable: false,
+                            targets: -1,
+                            className: 'text-center'
+                        },
+                        {
+                            targets: "_all",
+                            className: 'align-middle'
+                        }
+                    ],
+
+                    // ==========================
+                    // Fix: Make "Show X entries" dropdown Bootstrap styled
+                    // ==========================
+                    drawCallback: function () {
+                        $('#' + tableId + '_length select')
+                            .addClass('form-select form-select-sm');
+                    }
+                });
+
+                // Add search icon inside each DataTable's search input
+                $('#' + tableId + '_filter input')
+                    .removeClass('form-control-sm')
+                    .addClass('form-control ps-5')
+                    .wrap('<div class="position-relative d-inline-block"></div>')
+                    .before('<i class="fas fa-search position-absolute" style="left:10px; top:50%; transform:translateY(-50%); color:#aaa;"></i>');
+
+            });
+
+            // ==========================
+            // Show TempData messages
+            // ==========================
+            var errorMessage = '@TempData["ErrorMessage"]';
+            var successMessage = '@TempData["SuccessMessage"]';
+
+            if (errorMessage) showMessage('error', errorMessage);
+            else if (successMessage) showMessage('success', successMessage);
+
+            // ==========================
+            // Sidebar toggle (mobile)
+            // ==========================
+            $('.navbar-toggler').on('click', function () {
+                $('#sidebar').toggleClass('active');
+                $('#main-content').toggleClass('sidebar-active');
+            });
+        });
+
+        // ==========================
+        // Function to show modal message
+        // ==========================
+        function showMessage(type, message) {
+            $('#modalMessageContent').html(message);
+            let bgColor = type === 'error' ? '#dc3545' : '#28a745';
+            $('#messageModal .modal-header').css({ backgroundColor: bgColor, color: 'white' });
+            new bootstrap.Modal(document.getElementById('messageModal')).show();
+        }
+
+        // ==========================
+        // Submenu toggle
+        // ==========================
+        function toggleSubMenu(element, menuId) {
+            document.querySelectorAll('.submenu').forEach(submenu => {
+                if (submenu.id !== menuId) {
+                    submenu.style.display = 'none';
+                    let toggleBtn = submenu.closest('.nav-item')?.querySelector('.toggle-menu');
+                    if (toggleBtn) toggleBtn.classList.remove('active');
+                }
+            });
+
+            const subMenu = document.getElementById(menuId);
+            if (subMenu.style.display === "none" || subMenu.style.display === "") {
+                subMenu.style.display = "block";
+                element.classList.add('active');
+            } else {
+                subMenu.style.display = "none";
+                element.classList.remove('active');
+            }
+        }
+
+        // ==========================
+        // Price + VAT calculation
+        // ==========================
+        function calculateTotal() {
+            let price = parseFloat(document.getElementById("Price")?.value) || 0;
+            let vat = parseFloat(document.getElementById("Vat")?.value) || 0;
+            let total = price + (price * vat / 100);
+            if (document.getElementById("GrandTotal")) {
+                document.getElementById("GrandTotal").value = total.toFixed(2);
+            }
+        }
+
+        // ==========================
+        // Helper function to show toast notifications
+        // ==========================
+        function showToast(type, message) {
+            const toastContainer = $('#toast-container');
+            if (toastContainer.length === 0) {
+                $('body').append('<div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>');
+            }
+
+            const toastId = 'toast-' + Date.now();
+            const bgColor = type === 'error' ? 'bg-danger' : type === 'warning' ? 'bg-warning' : 'bg-success';
+            const icon = type === 'error' ? 'fa-exclamation-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-check-circle';
+
+            const toastHtml = `
+                                    <div id="${toastId}" class="toast ${bgColor} text-white" role="alert" style="min-width: 300px;">
+                                        <div class="toast-header ${bgColor} text-white">
+                                            <i class="fas ${icon} me-2"></i>
+                                            <strong class="me-auto">${type.charAt(0).toUpperCase() + type.slice(1)}</strong>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                                        </div>
+                                        <div class="toast-body">
+                                            ${message}
+                                        </div>
+                                    </div>
+                                `;
+
+            $('#toast-container').append(toastHtml);
+            const toastEl = document.getElementById(toastId);
+            const toast = new bootstrap.Toast(toastEl, { delay: 5000 });
+            toast.show();
+
+            toastEl.addEventListener('hidden.bs.toast', function () {
+                $(this).remove();
+            });
+        }
+
+        // ==========================
+        // Initialize all tooltips
+        // ==========================
+        $(function () {
+            $('[data-bs-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
+

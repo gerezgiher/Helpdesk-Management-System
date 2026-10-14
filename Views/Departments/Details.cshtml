@@ -1,0 +1,54 @@
+﻿@model HelpdeskSystem.Models.Department
+
+<hr />
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+
+        <!-- Department Details Panel -->
+        <div class="panel panel-default mb-4 border rounded shadow-sm">
+            <div class="panel-heading bg-light p-3 border-bottom rounded-top">
+                <h4 class="panel-title fw-bold text-center" style="color:darkcyan">
+                    Department Details
+                </h4>
+            </div>
+
+            <div class="panel-body p-4">
+
+                <!-- Department Basic Info -->
+                <div class="mb-3">
+                    <h5 class="fw-bold">@Model.DepartmentName (@Model.DepartmentCode)</h5>
+                    <p><strong>Location:</strong> @Model.Location</p>
+                    <p><strong>Total Employees:</strong> @Model.Employees?.Count ?? 0</p>
+                </div>
+
+                <!-- Buttons -->
+                <div class="mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning px-4 me-2">
+                        <i class="fas fa-edit me-2"></i>Edit
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                        <i class="fas fa-arrow-left me-2"></i>Back to List
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .panel {
+            background-color: #fff;
+        }
+
+        .panel-body h5 {
+            color: #007bff;
+        }
+
+        .panel-body p {
+            font-size: 0.95rem;
+        }
+    </style>
+}

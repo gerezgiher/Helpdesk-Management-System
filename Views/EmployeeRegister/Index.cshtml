@@ -1,0 +1,55 @@
+﻿@model IEnumerable<HelpdeskSystem.Models.Employee>
+@using HelpdeskSystem.Models
+
+<h2 class="text-center mb-4 text-primary">Employees List</h2>
+
+<div class="mb-3 text-end">
+    <a asp-action="Create" class="btn btn-success">+ Register Employee</a>
+</div>
+
+<table id="employeesTable" class="table table-striped table-bordered custom-datatable">
+    <thead>
+        <tr>
+            <th>Employee Name</th>
+            <th>Block</th>
+            <th>Floor</th>
+            <th>Email</th>
+            <th>Department</th>
+            <th>Gender</th>
+            <th>Status</th>
+
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var emp in Model)
+        {
+            <tr>
+                <td>@emp.FirstName @(emp.MiddleName ?? "") @emp.LastName</td>
+                <td>@emp.Block?.BlockName</td>
+                <td>@emp.Block?.NumberOfFloors</td>
+                <td>@emp.Email</td>
+                <td>@emp.Department?.DepartmentName</td>
+                <td>@emp.Gender</td>
+                <td>
+                    <form asp-action="ToggleStatus" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@emp.Id" />
+                        <button type="submit"
+                                class="btn btn-sm @(emp.AvailabilityStatus == AvailabilityStatus.Active ? "btn-success" : "btn-danger")">
+                            @emp.AvailabilityStatus
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@emp.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <a asp-action="Details" asp-route-id="@emp.Id" class="btn btn-sm btn-outline-info ">Details</a>
+                    @* <form asp-action="Delete" method="post" class="d-inline"
+                onsubmit="return confirm('Are you sure you want to delete this employee?');">
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

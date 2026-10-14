@@ -1,0 +1,54 @@
+﻿@model HelpdeskSystem.Models.TicketApproval
+
+@{
+    ViewData["Title"] = "Ticket Approval Details";
+}
+
+<h2>@Model.Ticket.Title</h2>
+
+<div class="card mb-3">
+    <div class="card-header">
+        Ticket Info
+    </div>
+    <div class="card-body">
+        <p><strong>Description:</strong> @Model.Ticket.Description</p>
+        <p><strong>Category:</strong> @Model.Ticket.Category?.Name</p>
+        <p><strong>Priority:</strong> @Model.Ticket.Priority?.Name</p>
+        <p><strong>Created By:</strong> @Model.Ticket.CreatedByEmployee?.FirstName @Model.Ticket.CreatedByEmployee?.LastName</p>
+        <p><strong>Created At:</strong> @Model.Ticket.CreatedAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+
+        @if (!string.IsNullOrEmpty(Model.RejectionReason))
+        {
+            <p><strong>Rejection Reason:</strong> @Model.RejectionReason</p>
+        }
+    </div>
+</div>
+
+@if (Model.Status == HelpdeskSystem.Models.ApprovalStatus.Pending)
+{
+    <div class="mb-3">
+        <form asp-action="Approve" method="post" class="d-inline">
+            <input type="hidden" name="ticketId" value="@Model.TicketId" />
+            <button type="submit" class="btn btn-success">Approve</button>
+        </form>
+
+        <button class="btn btn-danger" data-bs-toggle="collapse" data-bs-target="#rejectForm">Reject</button>
+
+        <div class="collapse mt-2" id="rejectForm">
+            <form asp-action="Reject" method="post">
+                <input type="hidden" name="ticketId" value="@Model.TicketId" />
+                <div class="mb-2">
+                    <label for="rejectionReason" class="form-label">Rejection Reason</label>
+                    <textarea class="form-control" id="rejectionReason" name="rejectionReason" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-danger">Submit Rejection</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <p><strong>Decision made by:</strong> @Model.ApprovedBy?.UserName</p>
+    <p><strong>Decision Date:</strong> @Model.DecisionDate?.ToLocalTime().ToString("yyyy-MM-dd HH:mm")</p>
+}

@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+@* 
+@{
+    ViewData["Title"] = "Roles Management";
+} *@
+
+<link rel="stylesheet"
+      href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.min.css" />
+
+<h2 class="text-center mb-4 fw-bold">List of  Roles</h2>
+
+<!-- Create Role Form -->
+<div class="card p-3 shadow-sm mb-4" style="max-width:500px;">
+    <form asp-action="CreateRole" asp-controller="Admin" method="post" class="d-flex gap-2">
+        <input type="text" name="roleName" class="form-control" placeholder="Enter Role Name..." required />
+        <button type="submit" class="btn btn-primary">CreateNewRole</button>
+    </form>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="text-danger mt-2">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
+</div>
+
+<!-- Roles DataTable -->
+<table id="rolesTable" class="table table-striped table-bordered shadow-sm custom-datatable">
+    <thead class="table-dark">
+        <tr>
+            <th>Role Name</th>
+            <th style="width: 150px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="EditRole" asp-route-id="@role.Id" class="btn btn-sm btn-warning">Edit</a>
+
+                    <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post"
+                          class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this role?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
