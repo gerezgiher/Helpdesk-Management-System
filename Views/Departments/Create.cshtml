@@ -1,109 +1,441 @@
-﻿@model HelpdeskSystem.Models.Department
+﻿```cshtml
+@model HelpdeskSystem.Models.Department
 
 @{
-    var isEdit = ViewData["Title"]?.ToString().Contains("Edit") ?? false;
-    // ViewData["Title"] = isEdit ? "Edit Department" : "Create Department";
+    var isEdit = ViewData["Title"]?.ToString()
+        .Contains("Edit", StringComparison.OrdinalIgnoreCase) ?? false;
+
+    ViewData["Title"] = isEdit
+        ? "Edit Department"
+        : "Create Department";
 }
 
-@* <h2 class="text-center mb-4">@ViewData["Title"]</h2> *@
+<div class="container-fluid px-3 px-md-4 py-4 department-page">
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-}
-
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="@(isEdit ? "Edit" : "Create")" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <!-- Department Panel -->
-            <div class="panel panel-default mb-4 border rounded shadow-sm">
-                <div class="panel-heading bg-light p-3 border-bottom rounded-top text-center">
-                    <h4 class="panel-title fw-bold text-darkcyan">
-                        @(isEdit ? "Edit Department" : "Create Department")
-                    </h4>
+    <!-- PAGE HEADER -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="page-icon">
+                    <i class="fas fa-building"></i>
                 </div>
 
-                <div class="panel-body p-4">
-                    <div class="row">
+                <div>
+                    <h3 class="page-title mb-1">
+                        @(isEdit ? "Edit Department" : "Create Department")
+                    </h3>
 
-                        <!-- Left Column -->
-                        <div class="col-md-6">
+                    <p class="text-muted mb-0">
+                        @(isEdit
+                            ? "Update department information and organizational details."
+                            : "Register a new department in your organization.")
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                            <!-- Department Code -->
-                            <div class="mb-3 w-100" style="max-width:450px;">
-                                <div class="d-flex align-items-center">
-                                    <label asp-for="DepartmentCode" class="control-label fw-bold mb-0 me-3" style="min-width:120px;"></label>
-                                    <input asp-for="DepartmentCode" class="form-control" />
-                                </div>
-                                <div style="margin-left:120px;">
-                                    <span asp-validation-for="DepartmentCode" class="text-danger"></span>
-                                </div>
-                            </div>
+        <a asp-action="Index" class="btn btn-light border back-button">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Departments
+        </a>
+    </div>
 
-                            <!-- Department Name -->
-                            <div class="mb-3 w-100" style="max-width:450px;">
-                                <div class="d-flex align-items-center">
-                                    <label asp-for="DepartmentName" class="control-label fw-bold mb-0 me-3" style="min-width:120px;"></label>
-                                    <input asp-for="DepartmentName" class="form-control" />
-                                </div>
-                                <div style="margin-left:120px;">
-                                    <span asp-validation-for="DepartmentName" class="text-danger"></span>
-                                </div>
-                            </div>
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm"
+             role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            @TempData["SuccessMessage"]
 
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close">
+            </button>
+        </div>
+    }
+
+    <!-- VALIDATION SUMMARY -->
+    <div asp-validation-summary="ModelOnly"
+         class="alert alert-danger"
+         role="alert"></div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+
+            <div class="department-card">
+
+                <!-- CARD HEADER -->
+                <div class="card-header-custom">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="section-icon">
+                            <i class="fas fa-sitemap"></i>
                         </div>
 
-                        <!-- Right Column -->
-                        <div class="col-md-6">
+                        <div>
+                            <h5 class="mb-1 fw-bold">
+                                Department Information
+                            </h5>
 
-                            <!-- Location -->
-                            <div class="mb-3 w-100" style="max-width:450px;">
-                                <div class="d-flex align-items-center">
-                                    <label asp-for="Location" class="control-label fw-bold mb-0 me-3" style="min-width:120px;"></label>
-                                    <input asp-for="Location" class="form-control" />
-                                </div>
-                                <div style="margin-left:120px;">
-                                    <span asp-validation-for="Location" class="text-danger"></span>
-                                </div>
-                            </div>
-
+                            <small>
+                                Enter the official details for this department.
+                            </small>
                         </div>
                     </div>
+
+                    <span class="required-note">
+                        <span class="text-danger">*</span>
+                        Required fields
+                    </span>
                 </div>
+
+                <!-- FORM -->
+                <form asp-action="@(isEdit ? "Edit" : "Create")"
+                      method="post"
+                      autocomplete="off">
+
+                    @if (isEdit)
+                    {
+                        <input type="hidden" asp-for="Id" />
+                    }
+
+                    <div class="card-body-custom">
+
+                        <div class="row g-4">
+
+                            <!-- DEPARTMENT CODE -->
+                            <div class="col-12 col-md-6">
+                                <label asp-for="DepartmentCode"
+                                       class="form-label">
+                                    Department Code
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <div class="input-group professional-input">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-barcode"></i>
+                                    </span>
+
+                                    <input asp-for="DepartmentCode"
+                                           class="form-control"
+                                           placeholder="e.g. IT-001"
+                                           required />
+                                </div>
+
+                                <span asp-validation-for="DepartmentCode"
+                                      class="text-danger validation-message"></span>
+
+                                <div class="form-text">
+                                    Enter a unique code for identification.
+                                </div>
+                            </div>
+
+                            <!-- DEPARTMENT NAME -->
+                            <div class="col-12 col-md-6">
+                                <label asp-for="DepartmentName"
+                                       class="form-label">
+                                    Department Name
+                                    <span class="text-danger">*</span>
+                                </label>
+
+                                <div class="input-group professional-input">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-building"></i>
+                                    </span>
+
+                                    <input asp-for="DepartmentName"
+                                           class="form-control"
+                                           placeholder="e.g. Information Technology"
+                                           required />
+                                </div>
+
+                                <span asp-validation-for="DepartmentName"
+                                      class="text-danger validation-message"></span>
+
+                                <div class="form-text">
+                                    Use the official department name.
+                                </div>
+                            </div>
+
+                            <!-- LOCATION -->
+                            <div class="col-12">
+                                <label asp-for="Location"
+                                       class="form-label">
+                                    Department Location
+                                </label>
+
+                                <div class="input-group professional-input">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </span>
+
+                                    <input asp-for="Location"
+                                           class="form-control"
+                                           placeholder="Enter building, floor, or office location" />
+                                </div>
+
+                                <span asp-validation-for="Location"
+                                      class="text-danger validation-message"></span>
+
+                                <div class="form-text">
+                                    Specify where the department is located.
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- INFORMATION NOTE -->
+                        <div class="information-note mt-4">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Ensure the department code and name match your
+                            organization's official records.
+                        </div>
+
+                    </div>
+
+                    <!-- FOOTER ACTIONS -->
+                    <div class="card-footer-custom">
+                        <a asp-action="Index"
+                           class="btn btn-outline-secondary px-4">
+                            Cancel
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-primary px-4 save-button">
+                            <i class="fas @(isEdit ? "fa-save" : "fa-plus-circle") me-2"></i>
+                            @(isEdit ? "Save Changes" : "Create Department")
+                        </button>
+                    </div>
+
+                </form>
             </div>
 
-            <!-- Buttons -->
-            <div class="form-group mt-3">
-                <button type="submit" class="btn btn-primary px-4 me-2">
-                    @(isEdit ? "Update" : "Save")
-                </button>
-                <a asp-action="Index" class="btn btn-outline-secondary px-4">
-                    <i class="fas fa-arrow-left me-2"></i>Back to List
-                </a>
+            <!-- FOOTER TEXT -->
+            <div class="page-footer-note mt-3">
+                <i class="fas fa-shield-alt me-1"></i>
+                Department Management
+                <span class="mx-2">•</span>
+                Help Desk Management System
             </div>
 
-
-
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
     <style>
-        .form-control {
-            width: 100% !important;
+        .department-page {
+            color: #263445;
         }
 
-        .field-validation-error {
+        .page-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            background: #e8f1ff;
+            color: #1765c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .page-title {
+            font-size: 1.55rem;
+            font-weight: 700;
+            color: #243447;
+        }
+
+        .department-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(15, 23, 42, 0.045);
+        }
+
+        .card-header-custom {
+            padding: 22px 26px;
+            border-bottom: 1px solid #e8edf3;
+            background: #fbfcfe;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .section-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #edf5ff;
+            color: #1765c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+        }
+
+        .card-header-custom h5 {
+            color: #263445;
+            font-size: 1.05rem;
+        }
+
+        .card-header-custom small {
+            color: #778496;
+        }
+
+        .required-note {
+            color: #778496;
+            font-size: 12px;
+        }
+
+        .card-body-custom {
+            padding: 28px 26px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 9px;
+            color: #344256;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .professional-input {
+            min-height: 44px;
+        }
+
+            .professional-input .input-group-text {
+                min-width: 46px;
+                justify-content: center;
+                background: #f7f9fc;
+                color: #718096;
+                border-color: #dce3ec;
+            }
+
+            .professional-input .form-control {
+                min-height: 44px;
+                border-color: #dce3ec;
+                color: #263445;
+                font-size: 14px;
+                box-shadow: none;
+            }
+
+                .professional-input .form-control:focus {
+                    border-color: #3982d7;
+                    box-shadow: 0 0 0 3px rgba(57, 130, 215, 0.12);
+                    z-index: 3;
+                }
+
+            .professional-input:focus-within .input-group-text {
+                border-color: #3982d7;
+                color: #1765c0;
+            }
+
+            .professional-input .form-control::placeholder {
+                color: #a0aab8;
+                font-size: 13px;
+            }
+
+        .form-text {
+            color: #8792a2;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .validation-message {
             display: block;
             margin-top: 5px;
+            font-size: 12px;
         }
 
-        select.form-control {
-            height: 38px;
+        .input-validation-error {
+            border-color: #dc3545 !important;
+        }
+
+        .information-note {
+            padding: 13px 15px;
+            background: #f1f7ff;
+            border: 1px solid #dceaff;
+            border-radius: 7px;
+            color: #45658c;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .card-footer-custom {
+            padding: 18px 26px;
+            background: #fbfcfe;
+            border-top: 1px solid #e8edf3;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+            .card-footer-custom .btn,
+            .back-button {
+                min-height: 40px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+        .save-button {
+            background: #1765c0;
+            border-color: #1765c0;
+        }
+
+            .save-button:hover {
+                background: #1053a2;
+                border-color: #1053a2;
+            }
+
+        .page-footer-note {
+            color: #8994a3;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .alert:empty {
+            display: none;
+        }
+
+        @@media (max-width: 576px) {
+            .department-page {
+                padding-left: 10px !important;
+                padding-right: 10px !important;
+            }
+
+            .card-header-custom,
+            .card-body-custom,
+            .card-footer-custom {
+                padding: 18px;
+            }
+
+            .card-footer-custom {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+                .card-footer-custom .btn {
+                    width: 100%;
+                }
+
+            .page-title {
+                font-size: 1.25rem;
+            }
         }
     </style>
 }
+```
